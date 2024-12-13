@@ -8,11 +8,11 @@ const port = 3000
 app.use(cors())
 app.use(express.json())
 
-const submitCode = async (code) => {
+const submitCode = async (code, languageId) => {
 
   const submissionData = {
     source_code: code,
-    language_id: 71,
+    language_id: languageId,
     stdin: ""
   }
 
@@ -76,8 +76,10 @@ const pollResults = async (token) => {
 // ROUTES
 app.post('/submit', async (req, res) => {
   const code = req.body.code
+  const languageId = req.body.languageId
+  console.log(languageId)
   try {
-    const token = await submitCode(code)
+    const token = await submitCode(code, languageId)
     const output = await pollResults(token)
     console.log(output)
     res.json(output)
