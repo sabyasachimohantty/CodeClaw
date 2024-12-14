@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.markdown-container h1 {
+    @apply text-2xl font-bold text-white mb-6;
+}
+  
+.markdown-container p {
+    @apply text-base text-white my-4;
+}
+
+.markdown-container pre {
+    @apply bg-gray-800 p-4 rounded-lg overflow-x-auto;
+}
+
+.markdown-container ul {
+    @apply list-disc pl-6 my-2;
+}
+
+.markdown-container ol {
+    @apply list-decimal pl-6 my-2;
+}
+
+.markdown-container code {
+    @apply bg-gray-800 px-2 py-1 rounded text-sm font-mono;
+}

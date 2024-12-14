@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const fs = require('fs/promises')
 
 const app = express()
 const port = 3000
@@ -72,6 +73,17 @@ const pollResults = async (token) => {
 
 }
 
+const getDescription = async (title) => {
+
+  try {
+    const data = await fs.readFile(`./src/problems/${title}/description.md`, { encoding: 'utf8' });
+    return data
+  } catch (err) {
+    throw new Error("Error while reading description", err)
+  }
+
+}
+
 
 // ROUTES
 app.post('/submit', async (req, res) => {
@@ -86,6 +98,19 @@ app.post('/submit', async (req, res) => {
   } catch (error) {
     console.log("Error from /submit: ", error)
   }
+})
+
+// TODO
+app.get('/problems/:title', async (req, res) => {
+  const title = req.params.title
+  try {
+    const description = await getDescription(title)
+    console.log(description)
+    res.json({description})
+  } catch (error) {
+    console.log('Error form /problems/:title', error)
+  }
+
 })
 
 app.listen(port, () => {
