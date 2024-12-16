@@ -1,16 +1,18 @@
-import CodeEditor from "./components/CodeEditor"
 import Home from "./components/Home"
-import ProblemDesc from "./components/ProblemDesc"
+import Navbar from "./components/Navbar"
+import Problem from "./components/Problem"
+import { BrowserRouter, Route, Routes } from 'react-router'
 
 
 function App() {
 
   return (
-    <div className="flex h-screen">
-      {/* <ProblemDesc />
-      <CodeEditor /> */}
-      <Home />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/problem/:title" element={<Problem />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

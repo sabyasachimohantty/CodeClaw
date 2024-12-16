@@ -1,26 +1,50 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
+import Navbar from './Navbar';
 
 const Home = () => {
 
-    async function handleClick() {
-        console.log("Click")
-        const response = await fetch('http://localhost:3000/problems/two-sum', {
-            method: 'GET',
-            headers: {
-              'Content-type': 'application/json',
-            },
-          })
+  const navigate = useNavigate();
+  const [problemSet, setProblemSet] = useState([]);
 
-        const res = await response.json()
-        console.log(res)
+  useEffect(() => {
+
+    async function fetchProblemSet() {
+
+      const response = await fetch('http://localhost:3000/problemset', {
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/json'
+        }
+      })
+
+      const data = await response.json()
+      setProblemSet(data.problemSet)
     }
 
+    fetchProblemSet()
+
+  }, [])
+
+  function handleClick(title) {
+    const id = title.toLowerCase().replaceAll(' ', '-')
+    navigate(`/problem/${id}`)
+  }
+
+  const problems = problemSet.map((problem, index) => 
+    <li key={index} onClick={() => handleClick(problem.title)}>
+      {problem.title}
+    </li>
+  )
+
   return (
-    <div className='flex justify-center'>
+    <div className='relative h-screen bg-slate-800 text-white'>
+      <Navbar />
+      <div className='flex justify-center'>
         <ul>
-            <li className='p-5 bg-slate-800 text-white rounded-md' onClick={handleClick}>Two Sum</li>
-            <li className='p-5 bg-slate-800 text-white rounded-md'>Three Sum</li>
+          {problems}
         </ul>
+      </div>
     </div>
   )
 }

@@ -1,14 +1,19 @@
 import Editor from '@monaco-editor/react'
 import { useRef, useState } from 'react'
+import { useParams } from 'react-router'
 
 const CodeEditor = () => {
   const editorRef = useRef(null)
 
+  const {title} = useParams()
   const [output, setOutput] = useState('')
   const [language, setLanguage] = useState('python')
   const [languageName, setLanguageName] = useState('Python')
   const [languageId, setLanguageId] = useState(92)
   const [active, setActive] = useState(false)
+  const [totalTestcases, setTotalTestcases] = useState(0)
+  const [acceptedTestcases, setAcceptedTestcases] = useState(0)
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
   const languages = [
     {
@@ -69,11 +74,13 @@ const CodeEditor = () => {
       headers: {
         'Content-type': 'application/json',
       },
-      body: JSON.stringify({ code, languageId })
+      body: JSON.stringify({ code, languageId, title })
     })
 
     const result = await response.json()
-    setOutput(result.stdout)
+    setAcceptedTestcases(result.acceptedTestcases)
+    setTotalTestcases(result.totalTestcases)
+    setIsSubmitted(true)
     console.log(result)
   }
 
@@ -102,7 +109,7 @@ const CodeEditor = () => {
         Submit
       </button>
       <div className='bg-slate-950 h-60 text-white'>
-        {output}
+        { isSubmitted ? <div>{acceptedTestcases}/{totalTestcases} Accepted</div> : ''}
       </div>
     </div>
   )
