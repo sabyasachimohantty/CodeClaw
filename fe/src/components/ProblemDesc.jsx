@@ -4,7 +4,7 @@ import { useParams } from 'react-router'
 
 const ProblemDesc = () => {
 
-  const {title} = useParams()
+  const { title } = useParams()
   const [markdown, setMarkdown] = useState('')
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const ProblemDesc = () => {
           'Content-type': 'application/json',
         },
       })
-  
+
       const problem = await response.json()
       setMarkdown(problem.description)
     }
@@ -23,11 +23,15 @@ const ProblemDesc = () => {
     fetchProblem()
   }, []);
 
-  console.log(markdown)
-
   return (
-    <div className='markdown-container bg-black text-white flex-1 px-5 py-4 overflow-y-scroll'>
-      <Markdown>{markdown}</Markdown>
+    <div className='flex-1 ml-3 flex flex-col mb-2'>
+      <div className='flex bg-stone-900 text-white text-sm rounded-t-lg'>
+        <span className='py-1 px-3 hover:bg-stone-950 rounded-tl-lg'>Description</span>
+        <span className='py-1 px-3 hover:bg-stone-950'>Submissions</span>
+      </div>
+      <div className='markdown-container bg-stone-950 text-white px-5 py-4 flex-grow overflow-y-scroll rounded-b-lg'>
+        <Markdown>{markdown}</Markdown>
+      </div>
     </div>
   )
 }

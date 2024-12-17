@@ -11,7 +11,7 @@
 }
 
 .markdown-container pre {
-    @apply bg-gray-800 p-4 rounded-lg overflow-x-auto;
+    @apply bg-stone-900 p-4 rounded-lg overflow-x-auto;
 }
 
 .markdown-container ul {
@@ -23,5 +23,5 @@
 }
 
 .markdown-container code {
-    @apply bg-gray-800 px-2 py-1 rounded text-sm font-mono;
+    @apply bg-stone-900 px-2 py-1 rounded text-sm font-mono;
 }

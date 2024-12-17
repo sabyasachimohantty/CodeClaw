@@ -178,6 +178,16 @@ app.get('/problemset', (req, res) => {
   res.json({problemSet})
 })
 
+app.get('/testcases/:title', async (req, res) => {
+  const title = req.params.title
+  try {
+    const testcases = await getInputs(title)
+    res.json({testcases})
+  } catch (error) {
+    console.log("Error from /testcases/:title", error)
+  }
+})
+
 app.listen(port, () => {
   console.log(`Server is successfully running on port ${port}`)
 })

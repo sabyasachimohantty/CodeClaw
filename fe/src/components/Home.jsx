@@ -31,19 +31,40 @@ const Home = () => {
     navigate(`/problem/${id}`)
   }
 
-  const problems = problemSet.map((problem, index) => 
-    <li key={index} onClick={() => handleClick(problem.title)}>
-      {problem.title}
-    </li>
+  const problems = problemSet.map((problem, index) =>
+    <tr key={index} className={`${index % 2 === 1 ? "bg-stone-900" : ""}`}>
+      <td className='px-4 py-3'>
+
+      </td>
+      <td className='px-4 py-3 hover:text-blue-600' onClick={() => handleClick(problem.title)}>
+        {problem.id + ". " + problem.title}
+      </td>
+      <td className={`px-4 py-3 ${problem.difficulty === 'Easy' ? 'text-green-500' : (problem.difficulty === 'Medium' ? 'text-orange-400' : 'text-red-600')}`}>
+        {problem.difficulty}
+      </td>
+      <td className='px-4 py-3'>
+
+      </td>
+    </tr>
   )
 
   return (
-    <div className='relative h-screen bg-slate-800 text-white'>
+    <div className='flex flex-col h-screen text-white'>
       <Navbar />
-      <div className='flex justify-center'>
-        <ul>
-          {problems}
-        </ul>
+      <div className='flex justify-center items-center bg-stone-950 flex-grow'>
+        <table className=''>
+          <thead>
+            <tr className='text-gray-400 text-sm text-left border-b'>
+              <th className='p-4'>Status</th>
+              <th className='p-4'>Title</th>
+              <th className='p-4'>Difficulty</th>
+              <th className='p-4'>Solution</th>
+            </tr>
+          </thead>
+          <tbody>
+            {problems}
+          </tbody>
+        </table>
       </div>
     </div>
   )
