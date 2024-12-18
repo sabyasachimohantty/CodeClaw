@@ -4,6 +4,7 @@ const fsPromise = require('fs/promises')
 const fs = require('fs')
 const readline = require('readline')
 const problemSet = require('./src/problems/problemSet.js')
+const extensions = require('./src/constants/extensions.js')
 
 const app = express()
 const port = 3000
@@ -59,13 +60,14 @@ const getExpectedOutputs = async (title) => {
   }
 }
 
-const submitCode = async (code, languageId, inputs) => {
+const submitCode = async (code, languageId, inputs, expectedOutputs) => {
 
-  const submissionData = inputs.map((input) => {
+  const submissionData = inputs.map((input, i) => {
     return {
       source_code: code,
       language_id: languageId,
-      stdin: input
+      stdin: input,
+      expected_output: expectedOutputs[i]
     }
   })
 
@@ -140,24 +142,46 @@ const getDescription = async (title) => {
 
 }
 
+const getFunctionSignature = async (title, language, extension) => {
+  try {
+    const data = await fsPromise.readFile(`./src/problems/${title}/boilerplate/${language}/function.${extension}`, { encoding: 'utf8' })
+    return data
+  } catch (error) {
+    throw new Error('Error while getting function signature', error)
+  }
+}
+
+const getFullCode = async (code, language, title) => {
+  try {
+    const extension = extensions.get(language)
+    const data = await fsPromise.readFile(`./src/problems/${title}/boilerplate/${language}/input.${extension}`, { encoding: 'utf8' });
+    const fullCode = data.replace('# CODE HERE #', code)
+    console.log(fullCode);
+    return fullCode
+  } catch (err) {
+    throw new Error('Error while getting full code', err)
+  }
+}
 
 // ROUTES
 app.post('/submit', async (req, res) => {
   const code = req.body.code
   const languageId = req.body.languageId
   const title = req.body.title
+  const language = req.body.language
 
   try {
+    const fullCode = await getFullCode(code, language, title)
     const inputs = await getInputs(title)
-    const tokens = await submitCode(code, languageId, inputs)
+    const expectedOutputs = await getExpectedOutputs(title)
+    const tokens = await submitCode(fullCode, languageId, inputs, expectedOutputs)
     const outputs = await Promise.all(tokens.map(async ({token}) => await pollResults(token)))
     console.log(outputs)
-    const expectedOutputs = await getExpectedOutputs(title)
     const stdouts = outputs.map((output) => output.stdout)
     const totalTestcases = inputs.length
     const acceptedTestcases = getAcceptedTestcases(expectedOutputs, stdouts)
     console.log(acceptedTestcases)
-    res.json({totalTestcases, acceptedTestcases})
+    res.json({totalTestcases, acceptedTestcases, outputs, expectedOutputs})
   } catch (error) {
     console.log("Error from /submit: ", error)
   }
@@ -187,6 +211,18 @@ app.get('/testcases/:title', async (req, res) => {
     console.log("Error from /testcases/:title", error)
   }
 })
+
+app.get('/function-signature/:title/:language', async (req, res) => {
+  try {
+    const {title, language} = req.params
+    const extension = extensions.get(language)
+    const functionSignature = await getFunctionSignature(title, language, extension)
+    res.json({functionSignature})
+  } catch (error) {
+    console.log('Error from /function-signature', error)
+  }
+})
+
 
 app.listen(port, () => {
   console.log(`Server is successfully running on port ${port}`)
