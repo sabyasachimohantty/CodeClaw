@@ -1,6 +1,7 @@
 import Editor from '@monaco-editor/react'
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const CodeEditor = () => {
 
@@ -26,6 +27,8 @@ const CodeEditor = () => {
       val: 'Javascript'
     }
   ]
+
+  const { isAuthenticated, loginWithPopup, user } = useAuth0()
 
   const editorRef = useRef(null)
 
@@ -109,6 +112,11 @@ const CodeEditor = () => {
   }
 
   async function handleSubmit() {
+    if (!isAuthenticated) {
+      loginWithPopup()
+      return
+    }
+
     let code = editorRef.current.getValue()
 
     const response = await fetch('http://localhost:3000/submit', {
@@ -116,7 +124,7 @@ const CodeEditor = () => {
       headers: {
         'Content-type': 'application/json',
       },
-      body: JSON.stringify({ code, languageId, title, language })
+      body: JSON.stringify({ code, languageId, title, language, userId: user.sub })
     })
 
     const result = await response.json()

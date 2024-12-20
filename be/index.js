@@ -169,6 +169,7 @@ app.post('/submit', async (req, res) => {
   const languageId = req.body.languageId
   const title = req.body.title
   const language = req.body.language
+  const userId = req.body.userId
 
   try {
     const fullCode = await getFullCode(code, language, title)
@@ -182,6 +183,7 @@ app.post('/submit', async (req, res) => {
     const acceptedTestcases = getAcceptedTestcases(expectedOutputs, stdouts)
     console.log(acceptedTestcases)
     res.json({totalTestcases, acceptedTestcases, outputs, expectedOutputs})
+    console.log(userId)
   } catch (error) {
     console.log("Error from /submit: ", error)
   }
