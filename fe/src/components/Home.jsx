@@ -19,7 +19,7 @@ const Home = () => {
       })
 
       const data = await response.json()
-      setProblemSet(data.problemSet)
+      setProblemSet(data.problems)
     }
 
     fetchProblemSet()

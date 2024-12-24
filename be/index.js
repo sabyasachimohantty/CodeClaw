@@ -5,6 +5,20 @@ const fs = require('fs')
 const readline = require('readline')
 const problemSet = require('./src/problems/problemSet.js')
 const extensions = require('./src/constants/extensions.js')
+const  { Pool } = require('pg')
+require("dotenv").config();
+
+// DB CONNECTION
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
 
 const app = express()
 const port = 3000
@@ -76,8 +90,8 @@ const submitCode = async (code, languageId, inputs, expectedOutputs) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-rapidapi-key': '48de2ae3c6msh0c773b89cbad10bp1a447bjsnab904f7bb03f',
-        'x-rapidapi-host': 'judge0-ce.p.rapidapi.com'
+        'x-rapidapi-key': process.env.RAPID_API_KEY,
+        'x-rapidapi-host': process.env.RAPID_API_HOST
       },
       body: JSON.stringify({submissions: submissionData}),
     });
@@ -163,6 +177,27 @@ const getFullCode = async (code, language, title) => {
   }
 }
 
+const getTitle = (title) => {
+  let fullTitle = ''
+  const words = title.split('-')
+  words.forEach((word) => {
+    fullTitle = fullTitle + word[0].toUpperCase() + word.substr(1) + ' '
+  })
+  return fullTitle.trim()
+}
+
+const updateSubmissionTable = async (userId, title, status, code) => {
+  try {
+    const fullTitle = getTitle(title)
+    const res = await pool.query(`select id from problems where title = $1`, [fullTitle])
+    const problemId = res.rows[0].id
+    console.log(problemId)
+    await pool.query(`INSERT INTO submissions (user_id, problem_id, code, status) VALUES ($1, $2, $3, $4)`, [userId, problemId, code, status])
+  } catch (error) {
+    throw new Error("Error while updating submission table", error)
+  }
+}
+
 // ROUTES
 app.post('/submit', async (req, res) => {
   const code = req.body.code
@@ -182,6 +217,10 @@ app.post('/submit', async (req, res) => {
     const totalTestcases = inputs.length
     const acceptedTestcases = getAcceptedTestcases(expectedOutputs, stdouts)
     console.log(acceptedTestcases)
+
+    const status = totalTestcases === acceptedTestcases ? "Accepted" :  "Wrong Answer"
+    await updateSubmissionTable(userId, title, status, code)
+
     res.json({totalTestcases, acceptedTestcases, outputs, expectedOutputs})
     console.log(userId)
   } catch (error) {
@@ -200,8 +239,14 @@ app.get('/problems/:title', async (req, res) => {
 
 })
 
-app.get('/problemset', (req, res) => {
-  res.json({problemSet})
+app.get('/problemset', async (req, res) => {
+  try {
+    const result = await pool.query('select * from problems limit 10')
+    const problems = result.rows
+    res.json({problems})
+  } catch (error) {
+    console.log("Error from /problemSet", error)
+  }
 })
 
 app.get('/testcases/:title', async (req, res) => {
