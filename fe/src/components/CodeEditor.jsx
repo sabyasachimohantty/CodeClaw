@@ -52,7 +52,7 @@ const CodeEditor = () => {
 
   useEffect(() => {
     const fetchTestcases = async () => {
-      const response = await fetch(`http://localhost:3000/testcases/${title}`, {
+      const response = await fetch(`https://codeclaw.onrender.com/testcases/${title}`, {
         method: 'GET',
         headers: {
           'Content-type': 'application/json'
@@ -70,7 +70,7 @@ const CodeEditor = () => {
 
   useEffect(() => {
     const fetchFuntionSignature = async () => {
-      const response = await fetch(`http://localhost:3000/function-signature/${title}/${language}`, {
+      const response = await fetch(`https://codeclaw.onrender.com/function-signature/${title}/${language}`, {
         method: 'GET',
         headers: {
           'Content-type': 'application/json'
@@ -119,7 +119,7 @@ const CodeEditor = () => {
 
     let code = editorRef.current.getValue()
 
-    const response = await fetch('http://localhost:3000/submit', {
+    const response = await fetch('https://codeclaw.onrender.com/submit', {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',

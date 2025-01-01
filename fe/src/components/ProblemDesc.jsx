@@ -9,7 +9,7 @@ const ProblemDesc = () => {
 
   useEffect(() => {
     const fetchProblem = async () => {
-      const response = await fetch(`http://localhost:3000/problems/${title}`, {
+      const response = await fetch(`https://codeclaw.onrender.com/problems/${title}`, {
         method: 'GET',
         headers: {
           'Content-type': 'application/json',

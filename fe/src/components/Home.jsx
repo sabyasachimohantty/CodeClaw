@@ -11,7 +11,7 @@ const Home = () => {
 
     async function fetchProblemSet() {
 
-      const response = await fetch('http://localhost:3000/problemset', {
+      const response = await fetch('https://codeclaw.onrender.com/problemset', {
         method: 'GET',
         headers: {
           'Content-type': 'application/json'
