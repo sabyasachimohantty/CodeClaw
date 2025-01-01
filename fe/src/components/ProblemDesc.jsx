@@ -27,7 +27,6 @@ const ProblemDesc = () => {
     <div className='flex-1 ml-3 flex flex-col mb-2'>
       <div className='flex bg-stone-900 text-white text-sm rounded-t-lg'>
         <span className='py-1 px-3 hover:bg-stone-950 rounded-tl-lg'>Description</span>
-        <span className='py-1 px-3 hover:bg-stone-950'>Submissions</span>
       </div>
       <div className='markdown-container bg-stone-950 text-white px-5 py-4 flex-grow overflow-y-scroll rounded-b-lg'>
         <Markdown>{markdown}</Markdown>
