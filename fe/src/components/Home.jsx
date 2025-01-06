@@ -4,6 +4,8 @@ import Navbar from './Navbar';
 
 const Home = () => {
 
+  const BE_URL = 'http://ec2-13-201-104-89.ap-south-1.compute.amazonaws.com:3000'
+
   const navigate = useNavigate();
   const [problemSet, setProblemSet] = useState([]);
 
@@ -11,7 +13,7 @@ const Home = () => {
 
     async function fetchProblemSet() {
 
-      const response = await fetch('https://codeclaw.onrender.com/problemset', {
+      const response = await fetch(`${BE_URL}/problemset`, {
         method: 'GET',
         headers: {
           'Content-type': 'application/json'

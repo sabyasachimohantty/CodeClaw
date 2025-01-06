@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router';
-import logo from '../assets/image.png'
 import { useAuth0 } from "@auth0/auth0-react";
 
 const Navbar = () => {
@@ -8,8 +7,8 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-stone-900 flex text-white justify-around h-12">
-      <div className='content-center font-mono text-2xl font-bold text-green-500'>
+    <div className="bg-stone-900 flex text-white justify-around">
+      <div className='content-center font-mono text-2xl font-bold text-green-500 py-3'>
         CodeClaw
       </div>
       <ul className="flex items-center gap-6">

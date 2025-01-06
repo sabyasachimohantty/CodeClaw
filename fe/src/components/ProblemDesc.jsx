@@ -4,12 +4,14 @@ import { useParams } from 'react-router'
 
 const ProblemDesc = () => {
 
+  const BE_URL = 'http://ec2-13-201-104-89.ap-south-1.compute.amazonaws.com:3000'
+
   const { title } = useParams()
   const [markdown, setMarkdown] = useState('')
 
   useEffect(() => {
     const fetchProblem = async () => {
-      const response = await fetch(`https://codeclaw.onrender.com/problems/${title}`, {
+      const response = await fetch(`${BE_URL}/problems/${title}`, {
         method: 'GET',
         headers: {
           'Content-type': 'application/json',

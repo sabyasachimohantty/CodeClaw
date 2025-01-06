@@ -28,6 +28,8 @@ const CodeEditor = () => {
     }
   ]
 
+  const BE_URL = 'http://ec2-13-201-104-89.ap-south-1.compute.amazonaws.com:3000'
+
   const { isAuthenticated, loginWithPopup, user } = useAuth0()
 
   const editorRef = useRef(null)
@@ -49,10 +51,11 @@ const CodeEditor = () => {
   const [totalTestcases, setTotalTestcases] = useState(0)
   const [acceptedTestcases, setAcceptedTestcases] = useState(0)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [canSubmit, setCanSubmit] = useState(true)
 
   useEffect(() => {
     const fetchTestcases = async () => {
-      const response = await fetch(`https://codeclaw.onrender.com/testcases/${title}`, {
+      const response = await fetch(`${BE_URL}/testcases/${title}`, {
         method: 'GET',
         headers: {
           'Content-type': 'application/json'
@@ -70,7 +73,7 @@ const CodeEditor = () => {
 
   useEffect(() => {
     const fetchFuntionSignature = async () => {
-      const response = await fetch(`https://codeclaw.onrender.com/function-signature/${title}/${language}`, {
+      const response = await fetch(`${BE_URL}/function-signature/${title}/${language}`, {
         method: 'GET',
         headers: {
           'Content-type': 'application/json'
@@ -117,9 +120,10 @@ const CodeEditor = () => {
       return
     }
 
+    setCanSubmit(false)
     let code = editorRef.current.getValue()
 
-    const response = await fetch('https://codeclaw.onrender.com/submit', {
+    const response = await fetch(`${BE_URL}/submit`, {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
@@ -133,7 +137,7 @@ const CodeEditor = () => {
     setOutputs(result.outputs)
     setExpectedOutputs(result.expectedOutputs)
     setIsSubmitted(true)
-    console.log(result)
+    setCanSubmit(true)
   }
 
   return (
@@ -159,12 +163,9 @@ const CodeEditor = () => {
         <div className='bg-stone-900 rounded-b-lg flex justify-between relative'>
           <div>
             <button onClick={handleSubmit}
-              className='px-5 py-2 bg-stone-950 rounded-bl-lg text-green-600 font-bold hover:bg-stone-800'>
+              className={`px-5 py-2 rounded-bl-lg text-green-600 font-bold hover:bg-stone-800 ${canSubmit ? "bg-stone-950" : "bg-stone-800"}`}
+              disabled={!canSubmit}>
               Submit
-            </button>
-            <button
-              className='text-white px-5 py-2 bg-stone-950 font-bold hover:bg-stone-800'>
-              Run
             </button>
           </div>
           <div className={`${!active ? 'hidden' : ''} absolute bottom-10 right-0`}>
