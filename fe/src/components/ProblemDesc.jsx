@@ -4,7 +4,7 @@ import { useParams } from 'react-router'
 
 const ProblemDesc = () => {
 
-  const BE_URL = 'http://ec2-13-201-104-89.ap-south-1.compute.amazonaws.com:3000'
+  const BE_URL = 'https://codeclawapi.sabya.site'
 
   const { title } = useParams()
   const [markdown, setMarkdown] = useState('')
